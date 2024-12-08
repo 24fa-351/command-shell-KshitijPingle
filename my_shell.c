@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "parsing.h"
+#include "commands.h"
 
 #define MAX_LINE 1000
 int main(int argc, char *argv[])
