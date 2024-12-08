@@ -14,7 +14,10 @@ int main(int argc, char *argv[])
     char line[MAX_LINE];
     while (1)
     {
-        printf("my_shell> ");
+        char absolute_path[1000];
+        char *words[1000];
+
+        printf("my_shell>  ");
         fgets(line, MAX_LINE, stdin);
 
         // Default for now
@@ -37,9 +40,6 @@ int main(int argc, char *argv[])
         line[strcspn(line, "\n")] = 0;
 
         printf("You entered: '%s'\n", line);
-
-        char absolute_path[1000];
-        char *words[1000];
 
         split(line, words, ' ');
 

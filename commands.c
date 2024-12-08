@@ -103,8 +103,14 @@ void greater_than(char *words[], int input_fd, int output_fd)
             redirect_output(output_fd);
         }
 
+        char *command[100];
+        for (int i = 0; i < command_index; i++)
+        {
+            command[i] = words[i];
+        }
+
         fprintf(stderr, "Executing command: '%s'\n", absolute_path);
-        execve(absolute_path, words, NULL);
+        execve(absolute_path, command, NULL);
     }
 
     wait(NULL);
