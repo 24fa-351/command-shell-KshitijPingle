@@ -10,4 +10,6 @@ void execute_command(char *words[], int input_fd, int output_fd);
 
 void greater_than(char *words[], int input_fd, int output_fd);
 
+void less_than(char *words[], int input_fd, int output_fd);
+
 #endif // COMMANDS_H
