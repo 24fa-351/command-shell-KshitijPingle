@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <fcntl.h>
 
 #include "parsing.h"
 #include "commands.h"
@@ -47,9 +48,20 @@ int main(int argc, char *argv[])
             printf("words[%d] = '%s'\n", i, words[i]);
         }
 
-        // Look if we got any valid commands
-        execute_commands(words, input_fd, output_fd);
-        
+        for (int i = 0; words[i] != NULL; i++)
+        {
+            if (strcmp(words[i], "<") == 0)
+            {
+                // Call the less than here
+            }
+            else if (strcmp(words[i], ">") == 0)
+            {
+                greater_than(words, input_fd, output_fd);
+                continue;
+            }
+        }
+
+        execute_command(words, input_fd, output_fd);
     }
 
     return 0;
