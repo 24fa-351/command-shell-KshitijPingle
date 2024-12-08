@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <fcntl.h>
+#include <stdbool.h>
 
 #include "parsing.h"
 #include "commands.h"
@@ -14,6 +15,7 @@ int main(int argc, char *argv[])
     char line[MAX_LINE];
     while (1)
     {
+        bool loop_finished = false;
         char absolute_path[1000];
         char *words[1000];
 
@@ -52,13 +54,19 @@ int main(int argc, char *argv[])
         {
             if (strcmp(words[i], "<") == 0)
             {
-                // Call the less than here
+                less_than(words, input_fd, output_fd);
+                loop_finished = true;
             }
             else if (strcmp(words[i], ">") == 0)
             {
                 greater_than(words, input_fd, output_fd);
-                continue;
+                loop_finished = true;
             }
+        }
+
+        if (loop_finished)
+        {
+            continue;
         }
 
         execute_command(words, input_fd, output_fd);
