@@ -8,11 +8,10 @@
 int main(int argc, char *argv[])
 {
     char line[MAX_LINE];
-    while(1)
+    while (1)
     {
         printf("my_shell> ");
         fgets(line, MAX_LINE, stdin);
-        
 
         // Check if the user wants to exit the shell
         if ((strcmp(line, "exit\n") == 0) || (strcmp(line, "quit\n") == 0))
