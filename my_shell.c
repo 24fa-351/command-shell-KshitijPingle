@@ -15,6 +15,10 @@ int main(int argc, char *argv[])
         printf("my_shell> ");
         fgets(line, MAX_LINE, stdin);
 
+        // Default for now
+        int input_fd = 1;
+        int output_fd = 0;
+
         // Check if the user wants to exit the shell
         if ((strcmp(line, "exit\n") == 0) || (strcmp(line, "quit\n") == 0))
         {
@@ -41,6 +45,9 @@ int main(int argc, char *argv[])
         {
             printf("words[%d] = '%s'\n", i, words[i]);
         }
+
+        // Look if we got any valid commands
+        execute_commands(words, input_fd, output_fd);
         
     }
 
