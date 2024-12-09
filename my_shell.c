@@ -8,11 +8,15 @@
 
 #include "parsing.h"
 #include "commands.h"
+#include "env_vars.h"
 
 #define MAX_LINE 1000
+
 int main(int argc, char *argv[])
 {
     char line[MAX_LINE];
+    EnvVars *env_vars = create_env_vars();
+
     while (1)
     {
         bool loop_finished = false;
@@ -21,6 +25,7 @@ int main(int argc, char *argv[])
 
         printf("my_shell>  ");
         fgets(line, MAX_LINE, stdin);
+        replace_env_vars(line, env_vars);
 
         // Default for now
         int input_fd = 1;
@@ -72,5 +77,6 @@ int main(int argc, char *argv[])
         execute_command(words, input_fd, output_fd);
     }
 
+    destroy_env_vars(env_vars);
     return 0;
 }

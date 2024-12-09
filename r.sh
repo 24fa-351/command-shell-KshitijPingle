@@ -8,4 +8,4 @@
 
 
 # compile the program
-gcc -o my_shell my_shell.c parsing.c commands.c
+gcc -o my_shell my_shell.c parsing.c commands.c env_vars.c
