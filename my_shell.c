@@ -26,6 +26,9 @@ int main(int argc, char *argv[])
         char absolute_path[1000];
         char *words[1000];
 
+        // Make sure commands are reset everytime 
+        words[0] = NULL;
+
         char *current_dir = getcwd(s, 100);
 
         // BONUS: My WSL terminal has current_dir as blue, so I also added that
@@ -33,25 +36,6 @@ int main(int argc, char *argv[])
         printf("\033[0m my_shell>  ");
         // printf("my_shell>  ");
         fgets(line, MAX_LINE, stdin);
-
-        // Search for env vars with '$' and replace them with their values
-        replace_env_vars(line, env_vars);
-
-        // Default for now
-        int input_fd = 1;
-        int output_fd = 0;
-
-        // Check if the user wants to exit the shell
-        if ((strcmp(line, "exit\n") == 0) || (strcmp(line, "quit\n") == 0))
-        {
-            printf("Exiting my_shell\n");
-            break;
-        }
-
-        if (strcmp(line, "\n") == 0)
-        {
-            continue;
-        }
 
         // Remove the newline character from the end of the line
         line[strcspn(line, "\n")] = 0;
@@ -63,6 +47,26 @@ int main(int argc, char *argv[])
         for (int i = 0; words[i] != NULL; i++)
         {
             printf("words[%d] = '%s'\n", i, words[i]);
+        }
+
+        // Search for env vars with '$' and replace them with their values
+        replace_env_vars(line, env_vars);
+
+        // Default for now
+        int input_fd = 1;
+        int output_fd = 0;
+
+        // Check if the user wants to exit the shell
+        if ((strcmp(line, "exit") == 0) || (strcmp(line, "quit") == 0) || (strcmp(line, "q") == 0))
+        {
+            printf("Exiting my_shell\n");
+            destroy_env_vars(env_vars);
+            return 0;
+        }
+
+        if (strcmp(line, "\n") == 0)
+        {
+            continue;
         }
 
         // Check for special commands which I needed to implement
@@ -89,8 +93,19 @@ int main(int argc, char *argv[])
             }
             else if (strcmp(words[i], "set") == 0)
             {
-                set_env_var(env_vars, words[i + 1], words[i + 2]);
-                loop_finished = true;
+                // Check if words has enough arguments
+                if ((words[i + 2] != NULL) && (words[i + 1] != NULL))
+                {
+                    set_env_var(env_vars, words[i + 1], words[i + 2]);
+                    loop_finished = true;
+                    printf("Set '%s' to '%s'\n", words[i + 1], words[i + 2]);
+                }
+                else
+                {
+                    printf("Not enough arguments for setting env variable\n");
+                    loop_finished = true;
+                    break;
+                }
             }
             else if (strcmp(words[i], "unset") == 0)
             {
