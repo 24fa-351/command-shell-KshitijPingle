@@ -69,58 +69,7 @@ int main(int argc, char *argv[])
             continue;
         }
 
-        // Check for special commands which I needed to implement
-        for (int i = 0; words[i] != NULL; i++)
-        {
-            if (strcmp(words[i], "<") == 0)
-            {
-                less_than(words, input_fd, output_fd);
-                loop_finished = true;
-            }
-            else if (strcmp(words[i], ">") == 0)
-            {
-                greater_than(words, input_fd, output_fd);
-                loop_finished = true;
-            }
-            else if (strcmp(words[i], "cd") == 0)
-            {
-                // Change directory
-                if (chdir(words[i + 1]) != 0)
-                {
-                    perror("chdir");
-                }
-                loop_finished = true;
-            }
-            else if (strcmp(words[i], "set") == 0)
-            {
-                // Check if words has enough arguments
-                if ((words[i + 2] != NULL) && (words[i + 1] != NULL))
-                {
-                    set_env_var(env_vars, words[i + 1], words[i + 2]);
-                    loop_finished = true;
-                    printf("Set '%s' to '%s'\n", words[i + 1], words[i + 2]);
-                }
-                else
-                {
-                    printf("Not enough arguments for setting env variable\n");
-                    loop_finished = true;
-                    break;
-                }
-            }
-            else if (strcmp(words[i], "unset") == 0)
-            {
-                unset_env_var(env_vars, words[i + 1]);
-                loop_finished = true;
-            }
-        }
-
-        if (loop_finished)
-        {
-            continue;
-        }
-
-        // If I don't have to do anything special for this command, then do it
-        execute_command(words, input_fd, output_fd);
+        execute_command(words, input_fd, output_fd, env_vars);
     }
 
     destroy_env_vars(env_vars);

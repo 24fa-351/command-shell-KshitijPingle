@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 
+#include "env_vars.h"
 #include "parsing.h"
 #include "commands.h"
 
@@ -24,7 +25,7 @@ void redirect_output(int output_fd)
     close(output_fd);
 }
 
-void execute_command(char *words[], int input_fd, int output_fd)
+void execute_command(char *words[], int input_fd, int output_fd, EnvVars *env_vars)
 {
     char absolute_path[1000];
 
@@ -34,6 +35,51 @@ void execute_command(char *words[], int input_fd, int output_fd)
         {
             //printf("Found absolute path: '%s'\n", absolute_path);
             break;
+        }
+    }
+
+    // Check for special commands which I needed to implement
+    for (int i = 0; words[i] != NULL; i++)
+    {
+        if (strcmp(words[i], "<") == 0)
+        {
+            less_than(words, input_fd, output_fd);
+            return;
+        }
+        else if (strcmp(words[i], ">") == 0)
+        {
+            greater_than(words, input_fd, output_fd);
+            return;
+        }
+        else if (strcmp(words[i], "cd") == 0)
+        {
+            // Change directory
+            if (chdir(words[i + 1]) != 0)
+            {
+                perror("chdir");
+            }
+            return;
+        }
+        else if (strcmp(words[i], "set") == 0)
+        {
+            // Check if words has enough arguments
+            if ((words[i + 2] != NULL) && (words[i + 1] != NULL))
+            {
+                set_env_var(env_vars, words[i + 1], words[i + 2]);
+                printf("Set '%s' to '%s'\n", words[i + 1], words[i + 2]);
+                return;
+            }
+            else
+            {
+                printf("Error: Not enough arguments for setting env variable\n");
+                printf("Usage: set <key> <value>\n");
+                return;
+            }
+        }
+        else if (strcmp(words[i], "unset") == 0)
+        {
+            unset_env_var(env_vars, words[i + 1]);
+            return;
         }
     }
 
