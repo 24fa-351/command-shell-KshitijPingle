@@ -16,4 +16,5 @@ For CPSC 351 Assignment 14
 ## BONUS
 - Added current working directory to each line as you would see in a terminal
     - Extra credit for me?
-![Alt text](relative%20current_dir_screenshot.png?raw=true "Title")
+![alt text](https://github.com/24fa-351/command-shell-KshitijPingle/blob/main/current_dir_screenshot.png)
+
