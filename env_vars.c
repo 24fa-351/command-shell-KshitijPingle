@@ -2,6 +2,8 @@
 
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 
 #include "env_vars.h"
 
@@ -31,6 +33,7 @@ void destroy_env_vars(EnvVars* env_vars) {
     free(env_vars);
 }
 
+// Search for env vars with '$' and replace them with their values
 void replace_env_vars(char *line, EnvVars *env_vars) {
     char buffer[MAX_LINE];
     char *start = line;

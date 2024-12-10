@@ -5,6 +5,7 @@
 #include <string.h>
 #include <fcntl.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #include "parsing.h"
 #include "commands.h"
@@ -16,15 +17,24 @@ int main(int argc, char *argv[])
 {
     char line[MAX_LINE];
     EnvVars *env_vars = create_env_vars();
+    // EnvVars *env_vars[100];
 
     while (1)
     {
+        char s[100];
         bool loop_finished = false;
         char absolute_path[1000];
         char *words[1000];
 
-        printf("my_shell>  ");
+        char *current_dir = getcwd(s, 100);
+
+        // BONUS: My WSL terminal has current_dir as blue, so I also added that
+        printf("\033[34m%s", current_dir);
+        printf("\033[0m my_shell>  ");
+        // printf("my_shell>  ");
         fgets(line, MAX_LINE, stdin);
+
+        // Search for env vars with '$' and replace them with their values
         replace_env_vars(line, env_vars);
 
         // Default for now
@@ -55,6 +65,7 @@ int main(int argc, char *argv[])
             printf("words[%d] = '%s'\n", i, words[i]);
         }
 
+        // Check for special commands which I needed to implement
         for (int i = 0; words[i] != NULL; i++)
         {
             if (strcmp(words[i], "<") == 0)
@@ -67,6 +78,25 @@ int main(int argc, char *argv[])
                 greater_than(words, input_fd, output_fd);
                 loop_finished = true;
             }
+            else if (strcmp(words[i], "cd") == 0)
+            {
+                // Change directory
+                if (chdir(words[i + 1]) != 0)
+                {
+                    perror("chdir");
+                }
+                loop_finished = true;
+            }
+            else if (strcmp(words[i], "set") == 0)
+            {
+                set_env_var(env_vars, words[i + 1], words[i + 2]);
+                loop_finished = true;
+            }
+            else if (strcmp(words[i], "unset") == 0)
+            {
+                unset_env_var(env_vars, words[i + 1]);
+                loop_finished = true;
+            }
         }
 
         if (loop_finished)
@@ -74,6 +104,7 @@ int main(int argc, char *argv[])
             continue;
         }
 
+        // If I don't have to do anything special for this command, then do it
         execute_command(words, input_fd, output_fd);
     }
 
