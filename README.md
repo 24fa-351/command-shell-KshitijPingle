@@ -1,5 +1,5 @@
 # Shell Terminal Project
-For CPSC 351 Assignment 14
+Make a shell terminal for CPSC 351 Assignment 14
 
 # Currently Working
 - Single commands are working
@@ -17,6 +17,7 @@ For CPSC 351 Assignment 14
 
 ## BONUS
 - Added current working directory to each line as you would see in a terminal
-    - Extra credit for me?  
+
+
 ![alt text](https://github.com/24fa-351/command-shell-KshitijPingle/blob/main/current_dir_screenshot.png)
 
