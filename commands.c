@@ -25,6 +25,54 @@ void redirect_output(int output_fd)
     close(output_fd);
 }
 
+void execute_pipe(char *cmd1[], char *cmd2[], EnvVars *env_vars) {
+    int pipefd[2];
+    pid_t pid1, pid2;
+
+    if (pipe(pipefd) == -1) {
+        perror("pipe failed");
+        exit(1);
+    }
+
+    pid1 = fork();
+    if (pid1 == -1) {
+        perror("fork failed");
+        exit(1);
+    }
+
+    if (pid1 == 0) {
+        // First child process
+        close(pipefd[0]); // Close unused read end
+        dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe write end
+        close(pipefd[1]);
+
+        execute_command(cmd1, 0, pipefd[1], env_vars);
+        exit(1);
+    } else {
+        pid2 = fork();
+        if (pid2 == -1) {
+            perror("fork failed");
+            exit(1);
+        }
+
+        if (pid2 == 0) {
+            // Second child process
+            close(pipefd[1]); // Close unused write end
+            dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read end
+            close(pipefd[0]);
+
+            execute_command(cmd2, pipefd[0], 1, env_vars);
+            exit(1);
+        } else {
+            // Parent process
+            close(pipefd[0]);
+            close(pipefd[1]);
+            waitpid(pid1, NULL, 0);
+            waitpid(pid2, NULL, 0);
+        }
+    }
+}
+
 void execute_command(char *words[], int input_fd, int output_fd, EnvVars *env_vars)
 {
     char absolute_path[1000];
@@ -49,6 +97,12 @@ void execute_command(char *words[], int input_fd, int output_fd, EnvVars *env_va
         else if (strcmp(words[i], ">") == 0)
         {
             greater_than(words, input_fd, output_fd);
+            return;
+        }
+        else if (strcmp(words[i], "|") == 0)
+        {
+            words[i] = NULL;
+            execute_pipe(words, &words[i + 1], env_vars);
             return;
         }
         else if (strcmp(words[i], "cd") == 0)

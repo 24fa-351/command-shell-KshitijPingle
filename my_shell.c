@@ -39,8 +39,6 @@ int main(int argc, char *argv[])
         // Remove the newline character from the end of the line
         line[strcspn(line, "\n")] = 0;
 
-        printf("You entered: '%s'\n", line);
-
         int len_before = strlen(line);
 
         // Search for env vars with '$' and replace them with their values

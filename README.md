@@ -10,11 +10,13 @@ For CPSC 351 Assignment 14
     - Ex.  `pwd > output.txt`  
 - The '<' operator is also working
     - Ex. `wc < output.txt`
-- Still working on the environment variables
+- Environment Variables are working  
+    - Note: my replace_env_vars function is currently appending, I did not have enough time to fix it
+- Pipe is not working right now
 
 
 ## BONUS
 - Added current working directory to each line as you would see in a terminal
-    - Extra credit for me?
+    - Extra credit for me?  
 ![alt text](https://github.com/24fa-351/command-shell-KshitijPingle/blob/main/current_dir_screenshot.png)
 
