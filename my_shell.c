@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
         char absolute_path[1000];
         char *words[1000];
 
-        // Make sure commands are reset everytime 
+        // Make sure commands are reset everytime
         words[0] = NULL;
 
         char *current_dir = getcwd(s, 100);
@@ -34,7 +34,6 @@ int main(int argc, char *argv[])
         // BONUS: My WSL terminal has current_dir as blue, so I also added that
         printf("\033[34m%s", current_dir);
         printf("\033[0m my_shell>  ");
-        // printf("my_shell>  ");
         fgets(line, MAX_LINE, stdin);
 
         // Remove the newline character from the end of the line
@@ -42,15 +41,20 @@ int main(int argc, char *argv[])
 
         printf("You entered: '%s'\n", line);
 
-        split(line, words, ' ');
+        // split(line, words, ' ');
 
-        for (int i = 0; words[i] != NULL; i++)
-        {
-            printf("words[%d] = '%s'\n", i, words[i]);
-        }
+        // for (int i = 0; words[i] != NULL; i++)
+        // {
+        //     printf("words[%d] = '%s'\n", i, words[i]);
+        // }
 
         // Search for env vars with '$' and replace them with their values
         replace_env_vars(line, env_vars);
+
+        // Print the line after replacing the env vars
+        printf("After replacing env vars: '%s'\n", line);
+
+        split(line, words, ' ');
 
         // Default for now
         int input_fd = 1;
