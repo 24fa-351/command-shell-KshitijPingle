@@ -1,4 +1,7 @@
-// Add a header later
+// Kshitij Pingle
+// kpingle@csu.fullerton.edu
+// Date: 14 December, 2024
+// Description: Program to create a shell terminal
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -51,16 +54,16 @@ int main(int argc, char *argv[])
 
             // This is a temporary fix, I did not have enough time to fix it
 
-            for (int i = 0; i < len_before; ++i) {
-                for (int iy = 0; iy < strlen(line); ++iy) {
+            for (int i = 0; i < len_before; ++i)
+            {
+                for (int iy = 0; iy < strlen(line); ++iy)
+                {
 
                     // Move to the left by one
                     line[iy] = line[iy + 1];
                 }
             }
-            
         }
-        
 
         split(line, words, ' ');
 

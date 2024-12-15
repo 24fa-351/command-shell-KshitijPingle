@@ -1,4 +1,7 @@
-// Add header later
+// Kshitij Pingle
+// kpingle@csu.fullerton.edu
+// Date: 14 December, 2024
+// Description: Program to manage parsing functions
 
 #include <stdio.h>
 #include <stdlib.h>

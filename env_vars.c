@@ -1,4 +1,7 @@
-// Add a header later
+// Kshitij Pingle
+// kpingle@csu.fullerton.edu
+// Date: 14 December, 2024
+// Description: Program to manage environment variables
 
 #include <string.h>
 #include <stdio.h>
@@ -47,7 +50,7 @@ bool replace_env_vars(char *line, EnvVars *env_vars)
     bool found_dollar = false;
 
     while ((start = strchr(start, '$')) != NULL)
-    {   
+    {
         found_dollar = true;
 
         // Copy the part of the line before the $

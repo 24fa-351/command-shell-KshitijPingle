@@ -1,4 +1,7 @@
-// Add a header later
+// Kshitij Pingle
+// kpingle@csu.fullerton.edu
+// Date: 14 December, 2024
+// Description: Program to execute commands
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,7 +15,6 @@
 #include "parsing.h"
 #include "commands.h"
 
-
 void redirect_input(int input_fd)
 {
     dup2(input_fd, STDIN_FILENO);
@@ -25,45 +27,55 @@ void redirect_output(int output_fd)
     close(output_fd);
 }
 
-void execute_pipe(char *cmd1[], char *cmd2[], EnvVars *env_vars) {
+void execute_pipe(char *cmd1[], char *cmd2[], EnvVars *env_vars)
+{
     int pipefd[2];
     pid_t pid1, pid2;
 
-    if (pipe(pipefd) == -1) {
+    if (pipe(pipefd) == -1)
+    {
         perror("pipe failed");
         exit(1);
     }
 
     pid1 = fork();
-    if (pid1 == -1) {
+    if (pid1 == -1)
+    {
         perror("fork failed");
         exit(1);
     }
 
-    if (pid1 == 0) {
+    if (pid1 == 0)
+    {
         // First child process
-        close(pipefd[0]); // Close unused read end
+        close(pipefd[0]);               // Close unused read end
         dup2(pipefd[1], STDOUT_FILENO); // Redirect stdout to pipe write end
         close(pipefd[1]);
 
         execute_command(cmd1, 0, pipefd[1], env_vars);
         exit(1);
-    } else {
+    }
+    else
+    {
         pid2 = fork();
-        if (pid2 == -1) {
+        if (pid2 == -1)
+        {
             perror("fork failed");
             exit(1);
         }
 
-        if (pid2 == 0) {
+        if (pid2 == 0)
+        {
             // Second child process
-            close(pipefd[1]); // Close unused write end
+            close(pipefd[1]);              // Close unused write end
             dup2(pipefd[0], STDIN_FILENO); // Redirect stdin to pipe read end
             close(pipefd[0]);
 
             execute_command(cmd2, pipefd[0], 1, env_vars);
             exit(1);
-        } else {
+        }
+        else
+        {
             // Parent process
             close(pipefd[0]);
             close(pipefd[1]);
@@ -81,7 +93,7 @@ void execute_command(char *words[], int input_fd, int output_fd, EnvVars *env_va
     {
         if (find_absolute_path(words[i], absolute_path))
         {
-            //printf("Found absolute path: '%s'\n", absolute_path);
+            // printf("Found absolute path: '%s'\n", absolute_path);
             break;
         }
     }
@@ -148,12 +160,11 @@ void execute_command(char *words[], int input_fd, int output_fd, EnvVars *env_va
             redirect_output(output_fd);
         }
 
-        //fprintf(stderr, "Executing command: '%s'\n", absolute_path);
+        // fprintf(stderr, "Executing command: '%s'\n", absolute_path);
         execve(absolute_path, words, NULL);
     }
 
     wait(NULL);
-
 }
 
 void greater_than(char *words[], int input_fd, int output_fd)
@@ -168,15 +179,15 @@ void greater_than(char *words[], int input_fd, int output_fd)
     {
         if (strcmp(words[i], ">") == 0)
         {
-            //printf("Command: '%s'\n", words[i - 1]);
-            //printf("Output file: '%s'\n", words[i + 1]);
+            // printf("Command: '%s'\n", words[i - 1]);
+            // printf("Output file: '%s'\n", words[i + 1]);
 
             // <command> > <output_file>
 
             // Open the file for writing
             output_fd = open(words[i + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);
 
-            //printf("Output file descriptor: %d\n", output_fd);
+            // printf("Output file descriptor: %d\n", output_fd);
 
             command_index = i - 1;
 
@@ -185,7 +196,7 @@ void greater_than(char *words[], int input_fd, int output_fd)
     }
 
     find_absolute_path(words[command_index], absolute_path);
-    //printf("Found absolute path: '%s'\n", absolute_path);
+    // printf("Found absolute path: '%s'\n", absolute_path);
 
     int child_pid = fork();
 
@@ -203,7 +214,7 @@ void greater_than(char *words[], int input_fd, int output_fd)
             command[i] = words[i];
         }
 
-        //fprintf(stderr, "Executing command: '%s'\n", absolute_path);
+        // fprintf(stderr, "Executing command: '%s'\n", absolute_path);
         for (int i = 0; command[i] != NULL; i++)
         {
             fprintf(stderr, "Command[%d] = '%s'\n", i, command[i]);
@@ -214,7 +225,8 @@ void greater_than(char *words[], int input_fd, int output_fd)
     wait(NULL);
 }
 
-void less_than(char *words[], int input_fd, int output_fd) {
+void less_than(char *words[], int input_fd, int output_fd)
+{
     // <command> [args] < <input_file>
 
     char absolute_path[1000];
@@ -225,15 +237,15 @@ void less_than(char *words[], int input_fd, int output_fd) {
     {
         if (strcmp(words[i], "<") == 0)
         {
-            //printf("Command: '%s'\n", words[i - 1]);
-            //printf("Output file: '%s'\n", words[i + 1]);
+            // printf("Command: '%s'\n", words[i - 1]);
+            // printf("Output file: '%s'\n", words[i + 1]);
 
             // <command> > <output_file>
 
             // Open the file for reading
             input_fd = open(words[i + 1], O_RDONLY);
 
-            //printf("Output file descriptor: %d\n", output_fd);
+            // printf("Output file descriptor: %d\n", output_fd);
 
             command_index = i - 1;
 
@@ -242,7 +254,7 @@ void less_than(char *words[], int input_fd, int output_fd) {
     }
 
     find_absolute_path(words[command_index], absolute_path);
-    //printf("Found absolute path: '%s'\n", absolute_path);
+    // printf("Found absolute path: '%s'\n", absolute_path);
 
     int child_pid = fork();
 
@@ -260,7 +272,7 @@ void less_than(char *words[], int input_fd, int output_fd) {
             command[i] = words[i];
         }
 
-        //fprintf(stderr, "Executing command: '%s'\n", absolute_path);
+        // fprintf(stderr, "Executing command: '%s'\n", absolute_path);
         for (int i = 0; command[i] != NULL; i++)
         {
             fprintf(stderr, "Command[%d] = '%s'\n", i, command[i]);
