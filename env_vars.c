@@ -38,15 +38,17 @@ void destroy_env_vars(EnvVars *env_vars)
 }
 
 // Search for env vars with '$' and replace them with their values
-void replace_env_vars(char *line, EnvVars *env_vars)
+bool replace_env_vars(char *line, EnvVars *env_vars)
 {
     char buffer[MAX_LINE];
     char *start = line;
     char *end;
     buffer[0] = '\0';
+    bool found_dollar = false;
 
     while ((start = strchr(start, '$')) != NULL)
-    {
+    {   
+        found_dollar = true;
 
         // Copy the part of the line before the $
         strncat(buffer, line, start - line);
@@ -73,7 +75,7 @@ void replace_env_vars(char *line, EnvVars *env_vars)
     strcat(buffer, line);
     strcpy(line, buffer);
 
-    return;
+    return found_dollar;
 }
 
 const char *get_env_var(EnvVars *env_vars, const char *key)

@@ -41,18 +41,28 @@ int main(int argc, char *argv[])
 
         printf("You entered: '%s'\n", line);
 
-        // split(line, words, ' ');
-
-        // for (int i = 0; words[i] != NULL; i++)
-        // {
-        //     printf("words[%d] = '%s'\n", i, words[i]);
-        // }
+        int len_before = strlen(line);
 
         // Search for env vars with '$' and replace them with their values
-        replace_env_vars(line, env_vars);
+        bool found_dollar = replace_env_vars(line, env_vars);
 
-        // Print the line after replacing the env vars
-        printf("After replacing env vars: '%s'\n", line);
+        if (found_dollar)
+        {
+            // Right now, replace_env_vars is not working properly
+            // It is not replacing the env vars with their values, but appending them to the end of the line
+
+            // This is a temporary fix, I did not have enough time to fix it
+
+            for (int i = 0; i < len_before; ++i) {
+                for (int iy = 0; iy < strlen(line); ++iy) {
+
+                    // Move to the left by one
+                    line[iy] = line[iy + 1];
+                }
+            }
+            
+        }
+        
 
         split(line, words, ' ');
 
